@@ -1,6 +1,7 @@
 
 function addToGroup(skip, limit, groupId) {
-  var groupQuery = new Parse.Query('Group');
+  var Group = Parse.Object.extend('Group');
+  var groupQuery = new Parse.Query(Group);
   var userQuery = new Parse.Query(Parse.User);
   userQuery.limit(limit);
   userQuery.skip(skip);
@@ -13,7 +14,7 @@ function addToGroup(skip, limit, groupId) {
     return userQuery.find();
   })
   .then(function(u) {
-    for (var i = 0; i < users.length; i++) {
+    for (var i = 0; i < u.length; i++) {
       var groups = u[i].get('groups') || [];
       groups.push(group);
       u[i].set('groups', groups);
