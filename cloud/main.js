@@ -27,6 +27,8 @@ Parse.Cloud.define('addToGroup', function(req, res) {
   addToGroup(req.params.skip, req.params.limit, req.params.groupId)
     .then(function() {
       res.success();
+    }, function(error) {
+      res.error(error);
     })
 })
 
