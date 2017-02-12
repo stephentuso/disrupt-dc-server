@@ -28,8 +28,20 @@ Parse.Cloud.define('getEvents', function(req, res) {
         eventQuery.limit(1000)
         eventQuery.include('group')
         eventQuery.find().then(function (events) {
-            res.success(events);
+            let final_events = []
+            events.forEach(function (event) {
+                let final_group = allGroups[event.get('group').id]
+                if (final_group != undefined
+                    && final_group >= 40) {
+                    final_events.push(event)
+                }
+            })
+
+            res.success(final_events);
+
         })
+    }, function(error) {
+        console.log(error)
     });
 // jacob code end
 
