@@ -1,21 +1,36 @@
 Parse.Cloud.define('getEvents', function(req, res) {
-    let currentUser = req.user;
 
-    // 1. get entire users table <<<<
-    let userQuery = new Parse.Query(Parse.User);
+// jacob code start:
+    let userQuery = new Parse.Query(Parse.User)
+    userQuery.limit(1000)
+    userQuery.include('groups')
     userQuery.find().then(function (users) {
 
+        let allGroups = {}
+        req.user.get('groups').forEach(function (group) {
+            users.forEach(function (user) {
+                var isInside = false
+                user.get('groups').forEach(function (inner_group) {
+                    // is the currentUser's group equal to this person's group?
+                    isInside = (inner_group.id == group.id)
+                    // console.log(inner_group.id, group.id)
+                })
+                if (isInside) {
+                    if (isNaN(allGroups[group.id])) {
+                        allGroups[group.id] = 0
+                    }
+                    allGroups[group.id]++
+                }
+            })
+        })
+
+        let eventQuery = new Parse.Query('Event')
+        eventQuery.limit(1000)
+        eventQuery.include('group')
+        eventQuery.find().then(function (events) {
+            res.success(events);
+        })
     });
+// jacob code end
 
-    req.user.get("groups")
-    // 3. get every user in each of currentUser's group
-    // 4. intersect groups
-    // 5. choose group with largest intersection with user's groups
-
-    // 6. get list events for each group <<<<
-
-    // 7. compare events to interests and cap to N events /week
-
-    // 8. return list of events (int time order) <<<<
-    res.success('Hi');
 });
