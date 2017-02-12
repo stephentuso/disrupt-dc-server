@@ -5,6 +5,7 @@ function addToGroup(skip, limit, groupId) {
   userQuery.limit(limit);
   userQuery.skip(skip);
   userQuery.include('groups');
+  userQuery.ascending('objectId');
 
   var group;
   return groupQuery.get(groupId).then(function(g) {
